@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& points) {
+        for(int i=0;i<points.size();i++){
+            swap(points[i][0],points[i][1]);
+        }
+        sort(points.begin(),points.end());
+        
+          for(int i=0;i<points.size();i++){
+            swap(points[i][0],points[i][1]);
+        }
+       
+        int count=0;
+        int start=points[0][0];
+        int end=points[0][1];
+        
+        for(int i=1;i<points.size();i++){
+            if(end >= points[i][0] && end <= points[i][1]){
+                continue;
+            }
+            else{
+                count++;
+                start=points[i][0];
+                end=points[i][1];
+            }
+        }
+        count++;
+        return count;
+       
+    }
+};
