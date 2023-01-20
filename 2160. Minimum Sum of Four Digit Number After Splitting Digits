@@ -1,0 +1,22 @@
+https://leetcode.com/problems/minimum-sum-of-four-digit-number-after-splitting-digits/
+
+
+
+
+class Solution {
+public:
+    int minimumSum(int num) {
+        int digit = num;
+        vector<int> v;
+        while(digit != 0) {
+            int temp = digit % 10;
+            v.push_back(temp);
+            digit = digit/10;
+        }
+        sort(v.begin(), v.end());
+        int num1 = v[0]*10 + v[2];
+        int num2 = v[1]*10 + v[3];
+        int sum = num1 + num2;
+        return sum;
+    }
+};
