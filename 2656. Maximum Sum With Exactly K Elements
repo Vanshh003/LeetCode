@@ -1,0 +1,18 @@
+https://leetcode.com/problems/maximum-sum-with-exactly-k-elements/
+
+
+
+
+class Solution {
+public:
+    int maximizeSum(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int maxi = nums[nums.size() - 1];
+        int ans = maxi+k;
+        int sum=0;
+        for(int i=maxi; i<ans; i++) {
+            sum+=i;
+        }
+        return sum;;
+    }
+};
