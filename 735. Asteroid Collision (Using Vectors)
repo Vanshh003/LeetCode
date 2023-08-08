@@ -1,0 +1,27 @@
+https://leetcode.com/problems/asteroid-collision/
+
+
+
+
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& arr) {
+        vector<int> v;
+        for(auto i: arr) {
+            while(!v.empty() && i < 0 && v.back() > 0) {
+                int sum = i + v.back();
+                
+                if(sum < 0) v.pop_back();
+                else if(sum > 0) i = 0;
+                else {
+                    v.pop_back();
+                    i = 0;
+                }
+            }
+
+            if(i != 0) v.push_back(i);
+        }
+
+        return v;
+    }
+};
