@@ -1,0 +1,153 @@
+https://leetcode.com/problems/lfu-cache/
+
+
+
+
+class LFUCache {
+public:
+    class node {
+    public:
+        int key, value, cnt;
+        node* next;
+        node* prev;
+
+        node(int _key, int _value) {
+            key = _key;
+            value = _value;
+            cnt = 1;
+        }
+    };
+
+
+    class list {
+    public:
+        int size;
+        node* head;
+        node* tail;
+
+        list() {
+            head = new node(0, 0);
+            tail = new node(0, 0);
+            
+            head->next = tail;
+            tail->prev = head;
+            
+            size = 0;
+        }
+
+
+        void addFront(node* newnode) {
+            node* temp = head->next;
+            
+            newnode->next = temp;
+            newnode->prev = head;
+            
+            head->next = newnode;
+            temp->prev = newnode;
+            
+            size++;
+        }
+
+
+        void removeNode(node* delnode) {
+            node* delprev = delnode->prev;
+            node* delnext = delnode->next;
+            
+            delprev->next = delnext;
+            delnext->prev = delprev;
+            
+            size--;
+        }
+    };
+
+
+    public:
+    map<int, node*> keyNode;
+    map<int, list*> freqListMap;
+    
+    int maxSizeCache;
+    int minFreq;
+    int curSize;
+    
+
+    LFUCache(int capacity) {
+        maxSizeCache = capacity;
+        minFreq = 0;
+        curSize = 0;
+    }
+
+
+    void updateFreqListMap(node* newnode) {
+        keyNode.erase(newnode->key);
+        freqListMap[newnode->cnt]->removeNode(newnode);
+        
+        if(newnode->cnt == minFreq && freqListMap[newnode->cnt]->size == 0) minFreq++;
+
+        list* nextHigherFreqList = new list();
+        
+        if(freqListMap.find(newnode->cnt + 1) != freqListMap.end()) nextHigherFreqList = freqListMap[newnode->cnt + 1];
+        
+        newnode->cnt += 1;
+        
+        nextHigherFreqList->addFront(newnode);
+        freqListMap[newnode->cnt] = nextHigherFreqList;
+        keyNode[newnode->key] = newnode;
+    }
+
+    
+    int get(int key) {
+            if(keyNode.find(key) != keyNode.end()) {
+                node* newnode = keyNode[key];
+                
+                int val = newnode->value;
+                updateFreqListMap(newnode);
+                
+                return val;
+            }
+
+            return -1;
+        }
+    
+    
+    void put(int key, int value) {
+        if(maxSizeCache == 0) return;
+        
+        if(keyNode.find(key) != keyNode.end()) {
+            node* newnode = keyNode[key];
+            newnode->value = value;
+            
+            updateFreqListMap(newnode);
+        }
+        else {
+            if(curSize == maxSizeCache) {
+                list* newlist = freqListMap[minFreq];
+                
+                keyNode.erase(newlist->tail->prev->key);
+                freqListMap[minFreq]->removeNode(newlist->tail->prev);
+                
+                curSize--;
+            }
+
+            curSize++;
+
+            //new value has to be added who is not there previously
+            minFreq = 1;
+            list* listFreq = new list();
+           
+            if(freqListMap.find(minFreq) != freqListMap.end()) listFreq = freqListMap[minFreq]; 
+
+            node* newnode = new node(key, value);
+            listFreq->addFront(newnode);
+            keyNode[key] = newnode;
+            
+            freqListMap[minFreq] = listFreq;
+        }
+    }
+};
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache* obj = new LFUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
