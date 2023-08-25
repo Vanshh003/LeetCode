@@ -1,0 +1,47 @@
+https://leetcode.com/problems/reorganize-string/
+
+
+
+
+class Solution {
+public:
+    string reorganizeString(string s) {
+        map<char, int> map;
+        for(char i: s) map[i]++;
+        
+        priority_queue<pair<int, char>> maxheap;
+        for(auto i=map.begin(); i != map.end(); i++) maxheap.push({i->second, i->first});
+
+        string res;
+        while(maxheap.size() >= 2) {
+            //auto [freq1, char1] = maxheap.top(); 
+            int freq1 = maxheap.top().first;
+            char char1 = maxheap.top().second;
+            maxheap.pop();
+            
+            // auto [freq2, char2] = maxheap.top();
+            int freq2 = maxheap.top().first;
+            char char2 = maxheap.top().second;
+            maxheap.pop();
+
+            res += char1;
+            res += char2;
+
+            freq1--;
+            freq2--;
+
+            if(freq1 > 0) maxheap.push({freq1, char1});
+            if(freq2 > 0) maxheap.push({freq2, char2});
+        }
+
+        if(!maxheap.empty()) {
+            // auto [freq, ch] = maxheap.top();
+            int freq = maxheap.top().first;
+            char ch = maxheap.top().second;
+            if(freq > 1) return "";
+            res += ch;
+        }
+
+        return res;
+    }
+};
