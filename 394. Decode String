@@ -1,0 +1,40 @@
+https://leetcode.com/problems/decode-string/description/
+
+
+
+
+class Solution {
+public:
+    string decodeString(string s) {
+        stack<int> numst;
+        stack<string> st1;
+        
+        string res;
+        int cnt = 0;
+
+        for(char ch : s) {
+            if(isdigit(ch)) cnt = cnt * 10 + (ch - '0');
+            else if(ch == '[') {
+                numst.push(cnt);
+               
+                cnt = 0;
+                st1.push(res);
+               
+                res = "";
+            }
+            else if(ch == ']') {
+                int k = numst.top();
+                numst.pop();
+                
+                string temp = res;
+                res = st1.top();
+                st1.pop();
+                
+                while (k-- > 0) res += temp;
+            } 
+            else res += ch;
+        }
+
+        return res;
+    }
+};
