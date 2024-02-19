@@ -5,35 +5,145 @@ https://leetcode.com/problems/least-number-of-unique-integers-after-k-removals/d
 
 class Solution {
 public:
+    int findLeastNumOfUniqueInts(vector<int>& s, int k) {
+        map<int, int> map;
+        for(int i: s) map[i]++;
+        
+        vector<int> v;
+        for(auto i: map) v.push_back(i.second);
+        
+        int n = v.size()-1;
+        int i=0;
+        while(k != 0) {
+            sort(v.begin(), v.end());
+            
+            v[i] -= 1;
+            if(v[i] == 0) i++;
+            
+            k--;
+        }
+
+        vector<int> ans;
+        for(int i=0; i<=n; i++) if(v[i] != 0) ans.push_back(v[i]);
+        
+        return ans.size();
+    }
+};
+
+
+
+
+
+
+// TC: O(NlogN)
+// SC: O(N)
+
+class Solution {
+public:
     int findLeastNumOfUniqueInts(vector<int>& arr, int k) {
         unordered_map<int, int> map;
-        for(auto i: arr) map[i]++;
-        
-        int n = map.size();
-        vector<pair<int, int>> v(n);
-       
-        int j = 0;
-        for(auto i : map) {
-            v[j].first = i.second;
-            v[j].second = i.first;
-            j++;
+        vector<int> freq;
+
+        for(int i: arr) map[i]++;
+        for(auto i: map) freq.push_back(i.second);
+
+        sort(freq.begin(), freq.end());
+
+        for(int i=0; i<freq.size(); i++) {
+            k -= freq[i];
+            if(k < 0) return freq.size()-i;
         }
 
-        sort(v.begin(), v.end());
+        return 0;
+    }
+};
 
-        j = 0;
-        int ans = v.size();
-        while(k > 0) {
-            while(v[j].first > 0 && k > 0) {
-                v[j].first--;
-                k--;
-            }
-            if(v[j].first == 0) {
-                j++;
-                ans--;
-            }
+
+
+
+
+// TC: O(NlogN)     (TC of insertion of N elemets in priority queue is NlogN)
+// SC: O(N)
+
+class Solution {
+public:
+    int findLeastNumOfUniqueInts(vector<int>& arr, int k) {
+        unordered_map<int, int> map;
+        priority_queue<int, vector<int>, greater<int>> minheap;
+
+        for(int i: arr) map[i]++;
+        for(auto i: map) minheap.push(i.second);
+
+        while(!minheap.empty()) {
+            k -= minheap.top();
+
+            if(k < 0) return minheap.size();
+
+            minheap.pop();
         }
 
-        return ans;
+        return 0;
+    }
+};
+
+
+
+
+
+// TC: O(NlogN)     (TC of insertion of N elemets in priority queue is NlogN)
+// SC: O(N)
+
+class Solution {
+public:
+    int findLeastNumOfUniqueInts(vector<int>& arr, int k) {
+        unordered_map<int, int> map;
+        priority_queue<int, vector<int>, greater<int>> minheap;
+
+        for(int i: arr) map[i]++;
+        for(auto i: map) minheap.push(i.second);
+
+        while(!minheap.empty()) {
+            k -= minheap.top();
+
+            if(k < 0) return minheap.size();
+
+            minheap.pop();
+        }
+
+        return 0;
+    }
+};
+
+
+
+
+
+// TC: O(N)     
+// SC: O(N)
+
+class Solution {
+public:
+    int findLeastNumOfUniqueInts(vector<int>& arr, int k) {
+        int n = arr.size();
+        unordered_map<int, int> map;
+        for(int i: arr) map[i]++;
+
+        vector<int> freqcount(n+1);         //freqcount[i] = number of elements having frequency i
+        int unique = map.size();
+
+        for(auto i: map) {
+            int freq = i.second;
+            freqcount[freq]++;
+        }
+
+        for(int i=1; i<=n; i++) {
+            int del = min(k/i, freqcount[i]);
+            k-= del * i;
+
+            unique -= del;
+            if(k <= i) return unique;
+        }
+
+        return 0;
     }
 };
