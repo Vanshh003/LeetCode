@@ -3,24 +3,116 @@ https://leetcode.com/problems/set-matrix-zeroes/
 
 
 
+//                      BRUTE
+// TC: O(n * m) + (n + m + 1)
+// SC: O(n * m)
+
 class Solution {
 public:
     void setZeroes(vector<vector<int>>& matrix) {
-        vector<pair<int, int>> ans;
-        for(int i = 0; i < matrix.size(); i++) {
-            for(int j = 0; j < matrix[0].size(); j++) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+        
+        vector<vector<int>> visited = matrix;
+        
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
                 if(matrix[i][j] == 0) {
-                    ans.push_back(make_pair(i, j));
+                    for(int k=0; k<m; k++) { 
+                        visited[i][k] = 0;
+                    }
                 }
             }
         }
-        for(auto i : ans) {
-            for(int j = 0; j < matrix[0].size(); j++) {
-                matrix[i.first][j] = 0;
-            }
-            for(int j = 0; j < matrix.size(); j++) {
-                matrix[j][i.second] = 0;
+        
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
+                if(matrix[i][j] == 0) {
+                    for(int k=0; k<n; k++) {
+                        visited[k][j] = 0;
+                    }
+                }
             }
         }
+
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
+                matrix[i][j] = visited[i][j];
+            }
+        }
+    }
+};
+
+
+
+
+
+// TC: O(n * m) + (n + m + 1)
+// SC: O(1)
+
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+       
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) { 
+                if(matrix[i][j] == 0) {
+                    for(int k=0; k<m; k++) {
+                        if(matrix[i][k] != 0) matrix[i][k] = 1e8;
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
+                if(matrix[i][j] == 0) {
+                    for(int k=0; k<n; k++) {
+                        if(matrix[k][j] != 0) matrix[k][j] = 1e8;
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
+                if(matrix[i][j] == 1e8) matrix[i][j] = 0;
+            }
+        }
+    }
+};
+
+
+
+
+
+// TC: O(n * m) + O(n * m)
+// SC: O(n)
+
+class Solution {
+public:
+    void solve(int i, int j, int n, int m, vector<vector<int>> &matrix) {
+        for(int ii = 0; ii < n; ii++) {
+            for(int jj = 0; jj < m; jj++) {
+                if(ii == i || jj == j) matrix[ii][jj] = 0;
+            }
+        }
+    }
+
+    void setZeroes(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+
+        vector<pair<int, int>> v;
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(matrix[i][j] == 0) v.push_back({i, j});
+            }
+        }
+
+        for(auto i: v) solve(i.first, i.second, n, m, matrix);
     }
 };
