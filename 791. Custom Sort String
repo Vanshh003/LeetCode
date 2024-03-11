@@ -1,0 +1,25 @@
+https://leetcode.com/problems/custom-sort-string/description/
+
+
+
+
+class Solution {
+public:
+    string customSortString(string order, string s) {
+        unordered_map<char, int> map;
+        for(char i : order) map[i] = 0;
+        
+        for(char i : s) {
+            if(map.find(i) != map.end()) map[i]++;
+        }
+        
+        string ans;
+        for(char i : order) ans.append(map[i], i);
+        
+        for(char i : s) {
+            if(map.find(i) == map.end()) ans.push_back(i);
+        }
+        
+        return ans;
+    }
+};
