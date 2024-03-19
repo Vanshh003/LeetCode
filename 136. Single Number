@@ -54,7 +54,7 @@ public:
 
 
 
-//                   OPTIMAL
+//                   BETTER
 // TC: O(NlogN) + O(N)
 // SC: O(n)
 
@@ -70,5 +70,25 @@ public:
         }
 
         return -1;
+    }
+};
+
+
+
+
+
+//                   OPTIMAL
+// TC: O(N)
+// SC: O(1)
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int n = nums.size();
+        int xorr = 0;
+
+        for(int i: nums) xorr ^= i;
+
+        return xorr;
     }
 };
