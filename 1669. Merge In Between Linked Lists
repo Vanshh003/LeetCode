@@ -1,0 +1,48 @@
+https://leetcode.com/problems/merge-in-between-linked-lists/
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+class Solution {
+public:
+    ListNode* mergeInBetween(ListNode* list1, int a, int b, ListNode* list2) {
+        if(list1 == nullptr) return list2;
+        
+        ListNode* node1 = nullptr;
+        ListNode* node2 = nullptr;
+        ListNode* temp = list1;
+        int count = 0;
+
+        while(temp != nullptr) {
+            count++;
+            if(count == a) node1 = temp;
+            if(count == b) node2 = temp->next;
+
+            temp = temp->next;
+        }
+
+        ListNode* list2end = nullptr;
+        temp = list2;
+
+        while(temp != nullptr) {
+            list2end = temp;
+            temp = temp->next;
+        }
+
+        node1->next = list2;
+        list2end->next = node2->next;
+
+        return list1;
+    }
+};
