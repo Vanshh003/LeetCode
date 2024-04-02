@@ -3,25 +3,111 @@ https://leetcode.com/problems/linked-list-random-node/
 
 
 
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+
+
+
+
+// TC: O(n)
+// SC: O(n)
+
 class Solution {
-private:
-    ListNode* head;    
 public:
+    vector<int> v;
+
     Solution(ListNode* head) {
-        this->head = head;
-        std::srand(std::time(0));
-    }
-    int getRandom() {
-        int count = 0;
-        int result = 0;
-        ListNode* curr = head;   
-        while (curr) {
-            count++;
-            if (std::rand() % count == 0) {
-                result = curr->val;
-            }
-            curr = curr->next;
+        ListNode* temp = head;
+
+        while(temp != nullptr) {
+            v.push_back(temp->val);
+            temp = temp->next;
         }
-        return result;
+    }
+    
+    int getRandom() {
+        return v[rand() % v.size()];
     }
 };
+
+
+
+
+
+// TC: O(n)
+// SC: O(1)
+
+class Solution {
+public:
+    ListNode* temp;
+    int n = 0;
+
+    Solution(ListNode* head) {
+        temp = head;
+
+        while(head != nullptr) {
+            n++;
+            head = head->next;
+        }
+    }
+    
+    int getRandom() {
+        int x = rand()%n;
+        ListNode* dummy = temp;
+        
+        while(dummy) {
+            if(x == 0) return dummy->val;
+            dummy = dummy->next;
+            x--;
+        }
+
+        return temp->val;
+    }
+};
+
+
+
+
+
+//                      OPTIMAL (Reservoir Sampling)
+// TC: O(n)
+// SC: O(1)
+
+class Solution {
+public:
+    ListNode* head;
+
+    Solution(ListNode* head) {
+        this->head = head;
+    }
+    
+    int getRandom() {
+        ListNode* temp = head;
+        int res = 0;
+        int count = 0;
+
+        while(temp != nullptr) {
+            count++;
+            if(rand() % count == 0) res = temp->val;
+           
+            temp = temp->next;
+        }
+
+        return res;
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(head);
+ * int param_1 = obj->getRandom();
+ */
