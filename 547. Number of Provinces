@@ -1,31 +1,40 @@
-https://leetcode.com/problems/number-of-provinces/
-
-
-
+// TC: O(n) + O(v + 2e)   ~   O(n)
+// SC: O(n) + O(n)      (visited array + rec stack space)
 
 class Solution {
 public:
-    int findCircleNum(vector<vector<int>>& isConnected) {
-        int n = isConnected.size();
-        int provinces = 0;
-        vector<bool> visited(n, false);
+    void dfs(int node, vector<int> &visited, vector<int> adj[]) {
+        visited[node] = 1;
 
-        for (int i = 0; i < n; i++) {
-            if (!visited[i]) {
-                provinces++;
-                dfs(isConnected, visited, i);
+        for(auto it: adj[node]) {
+            if(!visited[it]) {
+                dfs(it, visited, adj);
             }
         }
-
-        return provinces;
     }
 
-    void dfs(vector<vector<int>>& isConnected, vector<bool>& visited, int node) {
-        visited[node] = true;
-        for (int neighbor = 0; neighbor < isConnected.size(); neighbor++) {
-            if (isConnected[node][neighbor] == 1 && !visited[neighbor]) {
-                dfs(isConnected, visited, neighbor);
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        int v = isConnected.size();
+        vector<int> adj[v];
+
+        for(int i=0; i<v; i++) {
+            for(int j=0; j<v; j++) {
+                if(isConnected[i][j] == 1 && i != j) {
+                    adj[i].push_back(j);
+                    adj[j].push_back(i);
+                }
             }
         }
+
+        vector<int> visited(v, 0);
+        int count = 0;
+        for(int i=0; i<v; i++) {
+            if(!visited[i]) {
+                count++;
+                dfs(i, visited, adj);
+            }
+        }
+
+        return count;
     }
 };
