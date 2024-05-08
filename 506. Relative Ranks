@@ -1,0 +1,29 @@
+https://leetcode.com/problems/relative-ranks/description/
+
+
+
+
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        vector<int> sortedScore = score;
+        sort(sortedScore.begin(), sortedScore.end(), greater<int>());
+        
+        vector<string> medals = {"Gold Medal", "Silver Medal", "Bronze Medal"};
+        
+        unordered_map<int, string> map;
+        
+        for(int i=0; i<sortedScore.size(); i++) {
+            if(i<3) map[sortedScore[i]] = medals[i];
+            else map[sortedScore[i]] = to_string(i+1);
+        }
+
+        vector<string> result;
+        
+        for(int s: score) {
+            result.push_back(map[s]);
+        }
+        
+        return result;
+    }
+};
