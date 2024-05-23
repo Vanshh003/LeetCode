@@ -1,0 +1,36 @@
+https://leetcode.com/problems/the-number-of-beautiful-subsets/
+
+
+
+
+class Solution {
+public:
+    int count;
+    unordered_map<int, int> visited;
+
+    void solve(vector<int>& nums, int k, int index) {
+        if(index == nums.size()) {
+            count++;
+            return;
+        }
+
+        int num = nums[index];
+
+        if(visited.find(num - k) == visited.end() && visited.find(num + k) == visited.end()) {
+            visited[num]++;
+            
+            solve(nums, k, index+1);
+            visited[num]--;
+            
+            if(visited[num] == 0) visited.erase(num);
+        }
+
+        solve(nums, k, index+1);
+    }
+
+    int beautifulSubsets(vector<int>& nums, int k) {
+        count = 0;
+        solve(nums, k, 0);
+        return count - 1;
+    }
+};
