@@ -5,29 +5,35 @@ https://leetcode.com/problems/is-graph-bipartite/
 
 class Solution {
 public:
-    bool isBipartite(vector<vector<int>>& gr) {
-        int n = gr.size();
-        vector<int> colour(n, 0);
+    bool check(int start, int n, vector<vector<int>> &graph, vector<int> &color) {
+        queue<int> q;
 
-        for(int node = 0; node < n; node++){
-            if(colour[node] != 0) continue;
+        q.push(start);
+        color[start] = 0;
 
-            queue<int> q;
-            q.push(node);
-            colour[node] = 1;
+        while(!q.empty()) {
+            int node = q.front();
+            q.pop();
 
-            while(!q.empty()){
-                int cur = q.front();
-                q.pop();
-
-                for(int ne : gr[cur]){
-                    if(colour[ne] == 0){
-                        colour[ne] = -colour[cur];
-                        q.push(ne);
-                    }else if(colour[ne] != -colour[cur]){
-                        return false;
-                    }
+            for(auto i: graph[node]) {
+                if(color[i] == -1) {
+                    color[i] = !color[node]; 
+                    q.push(i);
                 }
+                else if(color[i] == color[node]) return false;
+            } 
+        }
+
+        return true;
+    }
+
+    bool isBipartite(vector<vector<int>> &graph) {
+        int n = graph.size();
+        vector<int> color(n, -1);
+
+        for(int i=0; i<n; i++) {
+            if(color[i] == -1) {
+                if(check(i, n, graph, color) == false) return false;
             }
         }
 
