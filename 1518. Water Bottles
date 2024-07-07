@@ -1,0 +1,19 @@
+https://leetcode.com/problems/water-bottles/description/
+
+
+
+
+class Solution {
+public:
+    int numWaterBottles(int n, int re) {
+        int count = n;
+        
+        while(n >= re) {
+            int rem = n%re;
+            count += (n /= re);
+            n += rem;
+        }
+
+        return count;
+    }
+};
