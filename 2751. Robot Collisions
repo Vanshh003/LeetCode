@@ -1,0 +1,53 @@
+https://leetcode.com/problems/robot-collisions/description/
+
+
+
+
+// TC: O(nlogn)
+// SC: O(n)
+
+class Solution {
+public:
+    vector<int> survivedRobotsHealths(vector<int> &pos, vector<int>& health, string dir) {
+        int n = pos.size();
+
+        vector<int> v;
+        for(int i=0; i<n; i++) v.push_back(i);
+
+        auto comparator = [&](int id1, int id2) {
+            return pos[id1] <= pos[id2];
+        };
+
+        sort(v.begin(), v.end(), comparator);
+
+        stack<int> st;
+        for(auto i: v) {
+            if(dir[i] == 'R') st.push(i);
+            else {
+                while(!st.empty() && health[i] > 0) {
+                    if(health[i] > health[st.top()]) {
+                        health[i]--;
+                        health[st.top()] = 0;
+                        st.pop();
+                    }
+                    else if(health[i] < health[st.top()]) {
+                        health[i] = 0;
+                        health[st.top()]--;
+                    }
+                    else {
+                        health[i] = 0;
+                        health[st.top()] = 0;
+                        st.pop();
+                    }
+                }
+            }
+        }
+
+        vector<int> ans;
+        for(int i: health) {
+            if(i != 0) ans.push_back(i);
+        }
+
+        return ans;
+    }
+};
