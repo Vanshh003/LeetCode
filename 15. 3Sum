@@ -3,32 +3,43 @@ https://leetcode.com/problems/3sum/
 
 
 
+// brute try all triplets (sort and put them in a set to ensure uniqueness)   O(n^3)
+
+// eliminate 3rd loop, a[i] + a[j] + a[k] = 0 -> a[k] = -(a[i] + a[j]).. do it using set.. insert all the elements bt i and j and check if set contains -(a[i] + a[j])       O(n^2)
+
+// optimised is by sorting the array and using 2pointer approach. this would prevent the sorting of every triplet and maintaining an extra data structure for uniqueness    O(nlogn)+O(n^2)
+
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
         int n = nums.size();
         sort(nums.begin(), nums.end());
-        set<vector<int>> set;
+
         vector<vector<int>> ans;
-        for(int i=0; i<n-2; i++) {
-            int start = i+1, end = n-1;
-            while(start < end) {
-                if(nums[i] + nums[start] + nums[end] < 0) {
-                    start++;
-                }
-                else if(nums[i] + nums[start] + nums[end] > 0) { 
-                    end--;
-                }
-                else{
-                    set.insert({nums[i], nums[start], nums[end]});
-                    start++;
-                    end--;
+        int prev = nums[0];
+
+        for(int i=0; i<n; i++) {
+            if(i>0 && nums[i] == nums[i-1]) continue; 
+
+            int j = i+1;
+            int k = n-1;
+
+            while(j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+
+                if(sum > 0) k--;
+                else if(sum < 0) j++;
+                else {
+                    ans.push_back({nums[i], nums[j], nums[k]});
+                    j++;
+                    k--;
+
+                    while(j < k && nums[j] == nums[j-1]) j++;
+                    while(j < k && nums[k] == nums[k+1]) k--;
                 }
             }
         }
-        for(auto i : set){
-            ans.push_back(i);
-        }
+
         return ans;
     }
 };
