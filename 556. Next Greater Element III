@@ -1,0 +1,39 @@
+https://leetcode.com/problems/next-greater-element-iii/description/
+
+
+
+
+class Solution {
+public:
+    int nextGreaterElement(int num) {
+        string str = to_string(num);
+        int n = str.size();
+
+        int end = n-2;
+        while(end >= 0 && str[end] >= str[end+1]) end--;
+
+        if(end == -1) return -1;
+         
+        int last = n-1;
+        // while(last >= end) {
+        //     if(str[last] > str[end]) {
+        //         swap(str[last], str[end]);
+        //         break;
+        //     }
+
+        //     last--;
+        // }
+
+        while(str[last] <= str[end]) last--;
+        swap(str[last], str[end]);
+
+        string ans = str.substr(0, end+1);
+        for(int i=n-1; i>end; i--) ans += str[i];
+
+        // int res = 0;
+        // for(int i=0; i<n; i++) res = res * 10 + (ans[i]-'0');
+        
+        long long res = stoll(ans);
+        return (res <= INT_MAX) ? res : -1;
+    }
+};
