@@ -1,0 +1,28 @@
+https://leetcode.com/problems/rearrange-array-to-maximize-prefix-score/description/
+
+
+
+
+class Solution {
+public:
+    int maxScore(vector<int> &nums) {
+        sort(begin(nums), end(nums), greater<int>());
+
+        int cnt = 0;
+        long long sum = 0;
+
+        for(int i: nums) {
+            sum += i;
+            if(sum > 0) cnt++;
+        }
+
+        return cnt;
+    }
+};
+
+auto init = []() { 
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    return 'c';
+}();
